@@ -7,12 +7,23 @@ import note_info from "./routers/note_info.js";
 
 const app = express();
 
+
 //middleware for parsing json
 app.use(express.json());
+
 app.use("/person_info", person_info);
 app.use("/address_info", address_info);
 app.use("/workingDay", workingDay);
 app.use("/note_info", note_info);
+
+
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    methods: ["GET","POST","DELETE","PUT"],
+  })
+);
+app.use("/users", userRouter);
 
 const PORT = process.env.PORT || 3000;
 
