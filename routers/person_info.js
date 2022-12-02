@@ -7,11 +7,16 @@ const router = express.Router();
 router.post("/", async (request, response) => {
   try {
     const text =
-      "INSERT INTO users (email,password,fullname) VALUES ($1, crypt($2,gen_salt('bf')),$3) RETURNING *";
+      "INSERT INTO tbl_person_details (person_id,name,surname,degree,phone,room_no,address_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+
     const values = [
-      request.body.email,
-      request.body.password,
-      request.body.fullname,
+      request.body.person_id,
+      request.body.name,
+      request.body.surname,
+      request.body.degree,
+      request.body.phone,
+      request.body.room_no,
+      request.body.address_id,
     ];
 
     const result = await postgresClient.query(text, values);
@@ -27,7 +32,8 @@ router.post("/", async (request, response) => {
 router.post("/login", async (request, response) => {
   try {
     const text =
-      "SELECT * FROM users WHERE email = $1 AND password = crypt($2,password)";
+      "SELECT * FROM tbl_authorization WHERE email = $1 AND password = $2";
+
     const values = [request.body.email, request.body.password];
     const { rows } = await postgresClient.query(text, values);
 
@@ -47,7 +53,7 @@ router.put("/update/:userId", async (request, response) => {
   try {
     const { userId } = request.params;
     const text =
-      "UPDATE users SET email =$1 , fullname = $2  WHERE id = $3 RETURNING * ";
+      "UPDATE tbl_person_details SET email =$1 , name = $2  WHERE id = $3 RETURNING * ";
     const values = [request.body.email, request.body.fullname, userId];
 
     const { rows } = await postgresClient.query(text, values);
@@ -62,33 +68,33 @@ router.put("/update/:userId", async (request, response) => {
   }
 });
 
-//delete users
-router.delete("/:userId", async (request, response) => {
-  try {
-    const { userId } = request.params;
-    const text = "DELETE FROM users WHERE id = $1 RETURNING * ";
-    const values = [userId];
+// delete users
+// router.delete("/:userId", async (request, response) => {
+//   try {
+//     const { userId } = request.params;
+//     const text = "DELETE FROM users WHERE id = $1 RETURNING * ";
+//     const values = [userId];
 
-    const { rows } = await postgresClient.query(text, values);
+//     const { rows } = await postgresClient.query(text, values);
 
-    if (!rows.length) {
-      return response.status(404).json({ message: "User not found" });
-    }
+//     if (!rows.length) {
+//       return response.status(404).json({ message: "User not found" });
+//     }
 
-    return response
-      .status(200)
-      .json({ message: "Delete user", deleteUser: rows[0] });
-  } catch (error) {
-    console.log("error = ", error);
-    return response.status(400).json({ message: error.message });
-  }
-});
+//     return response
+//       .status(200)
+//       .json({ message: "Delete user", deleteUser: rows[0] });
+//   } catch (error) {
+//     console.log("error = ", error);
+//     return response.status(400).json({ message: error.message });
+//   }
+// });
 
-//Get users :
+//Get users all users:
 
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT  * FROM users ORDER BY id ASC  ";
+    const text = "SELECT  * FROM tbl_person_details ORDER BY person_id ASC  ";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
   } catch (error) {
