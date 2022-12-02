@@ -7,9 +7,10 @@ const router = express.Router();
 router.post("/note_info", async (request, response) => {
   try {
     const text =
-      "INSERT INTO noteInfo (noteTitle,noteDesc,personId) VALUES ($1,$2,$3) RETURNING *";
+      "INSERT INTO tbl_notes (note_id,title,description,person_id) VALUES ($1,$2,$3) RETURNING *";
 
     const values = [
+      request.body.noteID,
       request.body.noteTitle,
       request.body.noteDesc,
       request.body.personId,
@@ -26,7 +27,7 @@ router.post("/note_info", async (request, response) => {
 
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT * FROM noteInfo ORDER BY noteId ASC";
+    const text = "SELECT * FROM tbl_notes ORDER BY note_id ASC";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
   } catch (error) {

@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/workingDay", async (request, response) => {
   try {
     const text =
-      "INSERT INTO workingDay (day,startTime,endTime) VALUES ($1,$2,$3) RETURNING *";
+      "INSERT INTO tbl_workdate (day,start_time,end_time) VALUES ($1,$2,$3) RETURNING *";
 
     const values = [
       request.body.day,
@@ -26,7 +26,7 @@ router.post("/workingDay", async (request, response) => {
 
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT * FROM workingDay ORDER BY personal_id ASC";
+    const text = "SELECT * FROM tbl_workdate ORDER BY person_id ASC";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
   } catch (error) {

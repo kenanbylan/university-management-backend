@@ -7,13 +7,12 @@ const router = express.Router();
 router.post("/address", async (request, response) => {
   try {
     const text =
-      "INSERT INTO address_info (bina_no,mahalle,ilce,il) VALUES ($1,$2,$3,$4) RETURNING *";
+      "INSERT INTO tbl_address (province,district,apartment) VALUES ($1,$2,$3) RETURNING *";
 
     const values = [
-      request.body.bina_no,
-      request.body.mahalle,
-      request.body.ilce,
-      request.body.il,
+      request.body.province,
+      request.body.district,
+      request.body.apartment,
     ];
 
     const result = await postgresClient.query(text, values);
@@ -27,7 +26,7 @@ router.post("/address", async (request, response) => {
 
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT * FROM address_info ORDER BY address_id ASC";
+    const text = "SELECT * FROM tbl_address ORDER BY address_id ASC";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
   } catch (error) {
