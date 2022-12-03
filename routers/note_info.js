@@ -4,21 +4,23 @@ import postgresClient from "../config/database.js";
 const router = express.Router();
 
 //create note  ;
-router.post("/note_info", async (request, response) => {
+router.post("/note", async (request, response) => {
   try {
-    const text =
-      "INSERT INTO tbl_notes (note_id,title,description,person_id) VALUES ($1,$2,$3) RETURNING *";
+    //const text = "INSERT INTO tbl_notes (note_id,title,description,person_id) VALUES ($1,$2,$3) RETURNING *";
+    const text = "INSERT INTO tbl_notes (title,description,person_id) VALUES ($1,$2,$3) RETURNING *";
 
     const values = [
-      request.body.noteID,
-      request.body.noteTitle,
-      request.body.noteDesc,
-      request.body.personId,
+      //request.body.noteID,
+      request.body.title,
+      request.body.description,
+      request.body.person_id,
     ];
 
+    console.log(values[0]);
     const result = await postgresClient.query(text, values);
     const { rows } = result;
     return response.status(201).json({ message: rows[0] });
+
   } catch (error) {
     console.log("found error  : ", error);
     return response.status(400).json({ message: error.message });
