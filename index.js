@@ -5,6 +5,7 @@ import address_info from "./routers/address_info.js";
 import workingDay from "./routers/workingDay.js";
 import note_info from "./routers/note_info.js";
 import classroom from "./routers/classroom.js";
+import contacts from "./routers/contacts.js";
 import cors from "cors";
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/address_info", address_info);
 app.use("/workingDay", workingDay);
 app.use("/note_info", note_info);
 app.use("/classroom", classroom);
+app.use("/contacts", contacts);
 //app.use("/users", userRouter);
 
 
