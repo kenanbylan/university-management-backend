@@ -103,4 +103,40 @@ router.get("/", async (request, response) => {
   }
 });
 
+//Get userID by email address
+router.get("/email/:email", async (request, response) => {
+  try {
+    const { email } = request.params;
+    const text = "SELECT person_id FROM tbl_authorization WHERE email = $1";
+    const values = [ email.slice(1)];
+    const { rows } = await postgresClient.query(text, values);
+
+    if (!rows.length) { 
+      return response.status(404).json({ message: "User not found" });
+    }
+    return response.status(200).json(rows[0]);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+// get person by id
+router.get("/personID/:personId", async (request, response) => {
+  try {
+    const { personId } = request.params;
+    const text = "SELECT * FROM tbl_person_details WHERE person_id = $1";
+    const values = [parseInt(personId.slice(1))];
+    const { rows } = await postgresClient.query(text, values);
+
+    if (!rows.length) {
+      return response.status(404).json({ message: "User not found"});
+    }
+    return response.status(200).json(rows[0]);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 export default router;

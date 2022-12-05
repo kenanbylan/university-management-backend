@@ -27,6 +27,7 @@ router.post("/note", async (request, response) => {
   }
 });
 
+//get all notes ;
 router.get("/", async (request, response) => {
   try {
     const text = "SELECT * FROM tbl_notes ORDER BY note_id ASC";
@@ -37,5 +38,20 @@ router.get("/", async (request, response) => {
     return response.status(400).json({ message: error.message });
   }
 });
+
+//get note by person_id
+router.get("/person-notes/:personId", async (request, response) => {
+  try {
+    const { personId } = request.params;
+    const text = "SELECT * FROM tbl_notes WHERE person_id = $1";
+    const values = [parseInt(personId.slice(1))];
+    const { rows } = await postgresClient.query(text, values);
+    return response.status(200).json(rows);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 
 export default router;
