@@ -4,29 +4,33 @@ import postgresClient from "../config/database.js";
 const router = express.Router();
 
 //create note  ;
-router.post("/note_info", async (request, response) => {
+router.post("/note", async (request, response) => {
   try {
-    const text =
-      "INSERT INTO noteInfo (noteTitle,noteDesc,personId) VALUES ($1,$2,$3) RETURNING *";
+    //const text = "INSERT INTO tbl_notes (note_id,title,description,person_id) VALUES ($1,$2,$3) RETURNING *";
+    const text = "INSERT INTO tbl_notes (title,description,person_id) VALUES ($1,$2,$3) RETURNING *";
 
     const values = [
-      request.body.noteTitle,
-      request.body.noteDesc,
-      request.body.personId,
+      //request.body.noteID,
+      request.body.title,
+      request.body.description,
+      request.body.person_id,
     ];
 
+    console.log(values[0]);
     const result = await postgresClient.query(text, values);
     const { rows } = result;
     return response.status(201).json({ message: rows[0] });
+
   } catch (error) {
     console.log("found error  : ", error);
     return response.status(400).json({ message: error.message });
   }
 });
 
+//get all notes ;
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT * FROM noteInfo ORDER BY noteId ASC";
+    const text = "SELECT * FROM tbl_notes ORDER BY note_id ASC";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
   } catch (error) {
@@ -34,5 +38,20 @@ router.get("/", async (request, response) => {
     return response.status(400).json({ message: error.message });
   }
 });
+
+//get note by person_id
+router.get("/person-notes/:personId", async (request, response) => {
+  try {
+    const { personId } = request.params;
+    const text = "SELECT * FROM tbl_notes WHERE person_id = $1";
+    const values = [parseInt(personId.slice(1))];
+    const { rows } = await postgresClient.query(text, values);
+    return response.status(200).json(rows);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 
 export default router;

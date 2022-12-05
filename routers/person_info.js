@@ -7,16 +7,16 @@ const router = express.Router();
 router.post("/", async (request, response) => {
   try {
     const text =
-      "INSERT INTO person_info (name,surname,title,phone_number,email,address_id,room_no) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+      "INSERT INTO tbl_person_details (person_id,name,surname,degree,phone,room_no,address_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
 
     const values = [
+      request.body.person_id,
       request.body.name,
       request.body.surname,
-      request.body.title,
-      request.body.phone_number,
-      request.body.email,
-      request.body.address_id,
+      request.body.degree,
+      request.body.phone,
       request.body.room_no,
+      request.body.address_id,
     ];
 
     const result = await postgresClient.query(text, values);
@@ -32,7 +32,7 @@ router.post("/", async (request, response) => {
 router.post("/login", async (request, response) => {
   try {
     const text =
-      "SELECT * FROM personel_id WHERE email = $1 AND phone_number = $2";
+      "SELECT * FROM tbl_authorization WHERE email = $1 AND password = $2";
 
     const values = [request.body.email, request.body.password];
     const { rows } = await postgresClient.query(text, values);
@@ -53,7 +53,7 @@ router.put("/update/:userId", async (request, response) => {
   try {
     const { userId } = request.params;
     const text =
-      "UPDATE person_info SET email =$1 , name = $2  WHERE id = $3 RETURNING * ";
+      "UPDATE tbl_person_details SET email =$1 , name = $2  WHERE id = $3 RETURNING * ";
     const values = [request.body.email, request.body.fullname, userId];
 
     const { rows } = await postgresClient.query(text, values);
@@ -94,9 +94,45 @@ router.put("/update/:userId", async (request, response) => {
 
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT  * FROM person_info ORDER BY id ASC  ";
+    const text = "SELECT  * FROM tbl_person_details ORDER BY person_id ASC  ";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+//Get userID by email address
+router.get("/email/:email", async (request, response) => {
+  try {
+    const { email } = request.params;
+    const text = "SELECT person_id FROM tbl_authorization WHERE email = $1";
+    const values = [ email.slice(1)];
+    const { rows } = await postgresClient.query(text, values);
+
+    if (!rows.length) { 
+      return response.status(404).json({ message: "User not found" });
+    }
+    return response.status(200).json(rows[0]);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+// get person by id
+router.get("/personID/:personId", async (request, response) => {
+  try {
+    const { personId } = request.params;
+    const text = "SELECT * FROM tbl_person_details WHERE person_id = $1";
+    const values = [parseInt(personId.slice(1))];
+    const { rows } = await postgresClient.query(text, values);
+
+    if (!rows.length) {
+      return response.status(404).json({ message: "User not found"});
+    }
+    return response.status(200).json(rows[0]);
   } catch (error) {
     console.log("error = ", error);
     return response.status(400).json({ message: error.message });

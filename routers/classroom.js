@@ -8,9 +8,9 @@ const router = express.Router();
 router.post("/classroom", async (request, response) => {
   try {
     const text =
-      "INSERT INTO classroom (class_name,class_amount) VALUES ($1,$2) RETURNING *";
+      "INSERT INTO tbl_classroom (classroom_id,class_code,capacity) VALUES ($1,$2,$3) RETURNING *";
 
-    const values = [request.body.class_name, request.body.class_amount];
+    const values = [request.body.class_name, request.body.class_amount, request.body.class_capacity];
 
     const result = await postgresClient.query(text, values);
     const { rows } = result;
@@ -23,7 +23,7 @@ router.post("/classroom", async (request, response) => {
 
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT * FROM classroom ORDER BY class_id ASC";
+    const text = "SELECT * FROM tbl_classroom ORDER BY classroom_id ASC";
     const { rows } = await postgresClient.query(text);
     return response.status(200).json(rows);
   } catch (error) {
