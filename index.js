@@ -6,10 +6,11 @@ import workingDay from "./routers/workingDay.js";
 import note_info from "./routers/note_info.js";
 import classroom from "./routers/classroom.js";
 import contacts from "./routers/contacts.js";
+import dashboard from "./routers/dashboard.js";
 import cors from "cors";
-const app = express();
 
-//middleware for parsing json
+//middleware
+const app = express();
 
 //cors error problem solved
 app.use(
@@ -26,6 +27,7 @@ app.use("/workingDay", workingDay);
 app.use("/note_info", note_info);
 app.use("/classroom", classroom);
 app.use("/contacts", contacts);
+app.use("/dashboard", dashboard);
 //app.use("/users", userRouter);
 
 // .env dosyasında port numarasını belirledik.
