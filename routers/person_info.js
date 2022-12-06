@@ -139,4 +139,22 @@ router.get("/personID/:personId", async (request, response) => {
   }
 });
 
+// get person by id
+router.get("/personInfo/:personId", async (request, response) => {
+  try {
+    const { personId } = request.params;
+    const text = "SELECT name, surname, degree FROM tbl_person_details WHERE person_id = $1";
+    const values = [parseInt(personId.slice(1))];
+    const { rows } = await postgresClient.query(text, values);
+
+    if (!rows.length) {
+      return response.status(404).json({ message: "User not found"});
+    }
+    return response.status(200).json(rows[0]);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 export default router;
