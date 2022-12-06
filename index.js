@@ -15,7 +15,7 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:3001",
-    methods: ["GET","POST","DELETE","PUT"],
+    methods: ["GET", "POST", "DELETE", "PUT"],
   })
 );
 app.use(express.json());
@@ -27,7 +27,6 @@ app.use("/note_info", note_info);
 app.use("/classroom", classroom);
 app.use("/contacts", contacts);
 //app.use("/users", userRouter);
-
 
 // .env dosyasında port numarasını belirledik.
 //const PORT = process.env.PORT || 3000;
