@@ -108,10 +108,10 @@ router.get("/email/:email", async (request, response) => {
   try {
     const { email } = request.params;
     const text = "SELECT person_id FROM tbl_authorization WHERE email = $1";
-    const values = [ email.slice(1)];
+    const values = [email.slice(1)];
     const { rows } = await postgresClient.query(text, values);
 
-    if (!rows.length) { 
+    if (!rows.length) {
       return response.status(404).json({ message: "User not found" });
     }
     return response.status(200).json(rows[0]);
@@ -130,7 +130,7 @@ router.get("/personID/:personId", async (request, response) => {
     const { rows } = await postgresClient.query(text, values);
 
     if (!rows.length) {
-      return response.status(404).json({ message: "User not found"});
+      return response.status(404).json({ message: "User not found" });
     }
     return response.status(200).json(rows[0]);
   } catch (error) {
