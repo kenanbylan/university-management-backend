@@ -30,7 +30,7 @@ router.get("/", async (request, response) => {
 
     const data = [
       {
-        title: "Baslangic",
+        title: "Başlangıç",
         items: dataBegin,
       },
       {
@@ -79,6 +79,28 @@ router.put("/update/:workId", async (request, response) => {
     const { rows } = await postgresClient.query(text, values);
     if (!rows.length) {
       return response.status(404).json({ message: "Workss not found" });
+    }
+    return response.status(200).json({ message: rows[0] });
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+//Update note work_owner
+router.put("/setWorkOwner", async (request, response) => {
+  try {
+    const text =
+      "UPDATE tbl_works SET work_owner = $1, work_status = $2 WHERE work_id = $3 RETURNING * ";
+    const values = [
+      request.body.work_owner,
+      request.body.work_status,
+      request.body.work_id,
+    ];
+
+    const { rows } = await postgresClient.query(text, values);
+    if (!rows.length) {
+      return response.status(404).json({ message: "Works not found" });
     }
     return response.status(200).json({ message: rows[0] });
   } catch (error) {
