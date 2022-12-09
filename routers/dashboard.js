@@ -3,7 +3,7 @@ import postgresClient from "../config/database.js";
 
 const router = express.Router();
 
-//get  all workss ;
+//get all workss ;
 router.get("/", async (request, response) => {
   try {
     const text = "SELECT * FROM tbl_works  ORDER BY work_id ASC";
@@ -30,7 +30,7 @@ router.get("/", async (request, response) => {
 
     const data = [
       {
-        title: "Baslangic",
+        title: "Başlangıç",
         items: dataBegin,
       },
       {
@@ -87,13 +87,57 @@ router.put("/update/:workId", async (request, response) => {
   }
 });
 
+//Update work work_owner
+router.put("/setWorkOwner", async (request, response) => {
+  try {
+    const text =
+      "UPDATE tbl_works SET work_owner = $1, work_status = $2 WHERE work_id = $3 RETURNING * ";
+    const values = [
+      request.body.work_owner,
+      request.body.work_status,
+      request.body.work_id,
+    ];
+
+    const { rows } = await postgresClient.query(text, values);
+    if (!rows.length) {
+      return response.status(404).json({ message: "Works not found" });
+    }
+    return response.status(200).json({ message: rows[0] });
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+
+//Update work Finish Time
+router.put("/setWorkFinishTime", async (request, response) => {
+  try {
+    const text =
+      "UPDATE tbl_works SET finish_time = $1 WHERE work_id = $2 RETURNING * ";
+    const values = [
+      request.body.finish_time,
+      request.body.work_id,
+    ];
+
+    const { rows } = await postgresClient.query(text, values);
+    if (!rows.length) {
+      return response.status(404).json({ message: "Works not found" });
+    }
+    return response.status(200).json({ message: rows[0] });
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 //delete works
 router.delete("/delete/:workId", async (request, response) => {
   try {
     const { workId } = request.params;
     const text = "DELETE FROM tbl_works WHERE work_id = $1 RETURNING * ";
-    const values = [workId];
-    //const values = [parseInt(workId.slice(1))];
+    //const values = [workId];
+    const values = [parseInt(workId.slice(1))];
     const { rows } = await postgresClient.query(text, values);
 
     if (!rows.length) {
