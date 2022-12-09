@@ -3,7 +3,7 @@ import postgresClient from "../config/database.js";
 
 const router = express.Router();
 
-//get  all workss ;
+//get all workss ;
 router.get("/", async (request, response) => {
   try {
     const text = "SELECT * FROM tbl_works  ORDER BY work_id ASC";
@@ -87,7 +87,8 @@ router.put("/update/:workId", async (request, response) => {
   }
 });
 
-//Update note work_owner
+
+//Update work work_owner
 router.put("/setWorkOwner", async (request, response) => {
   try {
     const text =
@@ -109,13 +110,34 @@ router.put("/setWorkOwner", async (request, response) => {
   }
 });
 
+//Update work Finish Time
+router.put("/setWorkFinishTime", async (request, response) => {
+  try {
+    const text =
+      "UPDATE tbl_works SET finish_time = $1 WHERE work_id = $2 RETURNING * ";
+    const values = [
+      request.body.finish_time,
+      request.body.work_id,
+    ];
+
+    const { rows } = await postgresClient.query(text, values);
+    if (!rows.length) {
+      return response.status(404).json({ message: "Works not found" });
+    }
+    return response.status(200).json({ message: rows[0] });
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 //delete works
 router.delete("/delete/:workId", async (request, response) => {
   try {
     const { workId } = request.params;
     const text = "DELETE FROM tbl_works WHERE work_id = $1 RETURNING * ";
-    const values = [workId];
-    //const values = [parseInt(workId.slice(1))];
+    //const values = [workId];
+    const values = [parseInt(workId.slice(1))];
     const { rows } = await postgresClient.query(text, values);
 
     if (!rows.length) {
@@ -126,6 +148,30 @@ router.delete("/delete/:workId", async (request, response) => {
       .json({ message: "Delete work", deleteUser: rows[0] });
   } catch (error) {
     console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+//create work
+router.post("/work", async (request, response) => {
+  try {
+    const text =
+      "INSERT INTO tbl_works (work_name,details,work_creator,estimated_time, clasroom_id, create_time, priority) VALUES ($1,$2,$3, $4, $5, $6, $7) RETURNING *";
+    const values = [
+      request.body.work_name,
+      request.body.details,
+      request.body.work_creator,
+      request.body.estimated_time,
+      request.body.clasroom_id,
+      request.body.create_time,
+      request.body.priority
+    ];
+
+    const result = await postgresClient.query(text, values);
+    const { rows } = result;
+    return response.status(201).json({ message: rows[0] });
+  } catch (error) {
+    console.log("found error  : ", error);
     return response.status(400).json({ message: error.message });
   }
 });
