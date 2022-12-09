@@ -50,17 +50,17 @@ router.get("/person-notes/:personId", async (request, response) => {
 });
 
 //Update notes
-router.put("/note-update/:personId", async (request, response) => {
+router.put("/update-note/:noteId", async (request, response) => {
   try {
-    const { personId } = request.params;
+    const { noteId } = request.params;
     const text =
-      "UPDATE tbl_notes SET title = $1 , description = $2  WHERE person_id = $3 RETURNING * ";
-    const values = [request.body.title, request.body.description, personId];
+      "UPDATE tbl_notes SET title = $1 , description = $2  WHERE note_id = $3 RETURNING * ";
+    const values = [request.body.title, request.body.description, parseInt(noteId.slice(1))];
 
     const { rows } = await postgresClient.query(text, values);
 
     if (!rows.length) {
-      return response.status(404).json({ message: "User not found" });
+      return response.status(404).json({ message: "Note not found" });
     }
     return response.status(200).json({ message: rows[0] });
   } catch (error) {
@@ -69,20 +69,20 @@ router.put("/note-update/:personId", async (request, response) => {
   }
 });
 
-//delete users
-router.delete("/note-delete/:personId", async (request, response) => {
+//delete note
+router.delete("/delete-note/:noteId", async (request, response) => {
   try {
-    const { personId } = request.params;
-    const text = "DELETE FROM tbl_notes WHERE person_id = $1 RETURNING * ";
-    const values = [personId];
+    const { noteId } = request.params;
+    const text = "DELETE FROM tbl_notes WHERE note_id = $1 RETURNING * ";
+    const values = [parseInt(noteId.slice(1))];
     const { rows } = await postgresClient.query(text, values);
 
     if (!rows.length) {
-      return response.status(404).json({ message: "User not found" });
+      return response.status(404).json({ message: "Not not found" });
     }
     return response
       .status(200)
-      .json({ message: "Delete user", deleteUser: rows[0] });
+      .json({ message: "Delete note", deleteUser: rows[0] });
   } catch (error) {
     console.log("error = ", error);
     return response.status(400).json({ message: error.message });
