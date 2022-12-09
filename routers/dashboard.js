@@ -152,4 +152,28 @@ router.delete("/delete/:workId", async (request, response) => {
   }
 });
 
+//create work
+router.post("/work", async (request, response) => {
+  try {
+    const text =
+      "INSERT INTO tbl_works (work_name,details,work_creator,estimated_time, clasroom_id, create_time, priority) VALUES ($1,$2,$3, $4, $5, $6, $7) RETURNING *";
+    const values = [
+      request.body.work_name,
+      request.body.details,
+      request.body.work_creator,
+      request.body.estimated_time,
+      request.body.clasroom_id,
+      request.body.create_time,
+      request.body.priority
+    ];
+
+    const result = await postgresClient.query(text, values);
+    const { rows } = result;
+    return response.status(201).json({ message: rows[0] });
+  } catch (error) {
+    console.log("found error  : ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
+
 export default router;
