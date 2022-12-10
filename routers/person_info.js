@@ -53,8 +53,13 @@ router.put("/update/:userId", async (request, response) => {
   try {
     const { userId } = request.params;
     const text =
-      "UPDATE tbl_person_details SET email =$1 , name = $2  WHERE id = $3 RETURNING * ";
-    const values = [request.body.email, request.body.fullname, userId];
+      "UPDATE tbl_person_details SET phone =$1 , room_no = $2, degree = $3  WHERE person_id = $4 RETURNING * ";
+    const values = [
+      request.body.phone, 
+      request.body.room_no,
+      request.body.degree,      
+      parseInt(userId.slice(1))
+    ];
 
     const { rows } = await postgresClient.query(text, values);
 

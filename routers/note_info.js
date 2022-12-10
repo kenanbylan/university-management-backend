@@ -55,7 +55,10 @@ router.put("/update-note/:noteId", async (request, response) => {
     const { noteId } = request.params;
     const text =
       "UPDATE tbl_notes SET title = $1 , description = $2  WHERE note_id = $3 RETURNING * ";
-    const values = [request.body.title, request.body.description, parseInt(noteId.slice(1))];
+    const values = [
+      request.body.title, 
+      request.body.description, 
+      parseInt(noteId.slice(1))];
 
     const { rows } = await postgresClient.query(text, values);
 
