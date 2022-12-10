@@ -6,7 +6,8 @@ const router = express.Router();
 //get all workss ;
 router.get("/", async (request, response) => {
   try {
-    const text = "SELECT * FROM tbl_works  ORDER BY work_id ASC";
+    const text =
+      "Select work_name,work_id,details,work_creator,work_owner,estimated_time, work_status,clasroom_id,create_time,finish_time,priority,person_id, name ,surname From tbl_works INNER join tbl_person_details ON tbl_works.work_creator = tbl_person_details.person_id ORDER BY work_id ASC";
     const { rows } = await postgresClient.query(text);
 
     const obj = {};
@@ -87,7 +88,6 @@ router.put("/update/:workId", async (request, response) => {
   }
 });
 
-
 //Update work work_owner
 router.put("/setWorkOwner", async (request, response) => {
   try {
@@ -115,10 +115,7 @@ router.put("/setWorkFinishTime", async (request, response) => {
   try {
     const text =
       "UPDATE tbl_works SET finish_time = $1 WHERE work_id = $2 RETURNING * ";
-    const values = [
-      request.body.finish_time,
-      request.body.work_id,
-    ];
+    const values = [request.body.finish_time, request.body.work_id];
 
     const { rows } = await postgresClient.query(text, values);
     if (!rows.length) {
@@ -164,7 +161,7 @@ router.post("/work", async (request, response) => {
       request.body.estimated_time,
       request.body.clasroom_id,
       request.body.create_time,
-      request.body.priority
+      request.body.priority,
     ];
 
     const result = await postgresClient.query(text, values);

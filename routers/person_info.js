@@ -55,10 +55,10 @@ router.put("/update/:userId", async (request, response) => {
     const text =
       "UPDATE tbl_person_details SET phone =$1 , room_no = $2, degree = $3  WHERE person_id = $4 RETURNING * ";
     const values = [
-      request.body.phone, 
+      request.body.phone,
       request.body.room_no,
-      request.body.degree,      
-      parseInt(userId.slice(1))
+      request.body.degree,
+      parseInt(userId.slice(1)),
     ];
 
     const { rows } = await postgresClient.query(text, values);
@@ -148,12 +148,13 @@ router.get("/personID/:personId", async (request, response) => {
 router.get("/personInfo/:personId", async (request, response) => {
   try {
     const { personId } = request.params;
-    const text = "SELECT name, surname, degree FROM tbl_person_details WHERE person_id = $1";
+    const text =
+      "SELECT name, surname, degree FROM tbl_person_details WHERE person_id = $1";
     const values = [parseInt(personId.slice(1))];
     const { rows } = await postgresClient.query(text, values);
 
     if (!rows.length) {
-      return response.status(404).json({ message: "User not found"});
+      return response.status(404).json({ message: "User not found" });
     }
     return response.status(200).json(rows[0]);
   } catch (error) {
