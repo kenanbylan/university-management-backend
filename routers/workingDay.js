@@ -24,17 +24,41 @@ router.post("/workingDay", async (request, response) => {
   }
 });
 
-// router.get("/", async (request, response) => {
-//   try {
-//     const text = "Select name,surname,degree,room_no,day,start_time,end_time,tbl_person_details.person_id From tbl_person_details	INNER JOIN tbl_workdate ON tbl_person_details.person_id = tbl_workdate.person_id ORDER BY tbl_workdate.person_id DESC";
-//     const { rows } = await postgresClient.query(text);
-//     return response.status(200).json(rows);
-//   } catch (error) {
-//     console.log("error = ", error);
-//     return response.status(400).json({ message: error.message });
-//   }
-// });
+function groupByKey(array, key) {
+  return array.reduce((hash, obj) => {
+    if (obj[key] === undefined) return hash;
+    return Object.assign(hash, {
+      [obj[key]]: (hash[obj[key]] || []).concat(obj),
+    });
+  }, {});
+}
 
+router.get("/", async (request, response) => {
+  try {
+    const text = `Select  tbl_person_details.person_id  , name ,surname , degree ,day ,start_time, 
+    end_time from tbl_person_details 
+    inner join  tbl_person_workday
+    on 
+    tbl_person_details.person_id = tbl_person_workday.person_id
+    inner join tbl_workdate 
+    on 
+    tbl_person_workday.date_id = tbl_workdate.date_id  `;
+    const { rows } = await postgresClient.query(text);
 
+    const result = groupByKey(rows, "person_id");
+
+    const mapped = Object.entries(result).map(([key, value]) => ({
+      key,
+      value,
+    }));
+
+    console.log("mapped = ", mapped);
+
+    return response.status(200).json(mapped);
+  } catch (error) {
+    console.log("error = ", error);
+    return response.status(400).json({ message: error.message });
+  }
+});
 
 export default router;
