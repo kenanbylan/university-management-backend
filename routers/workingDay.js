@@ -35,14 +35,14 @@ function groupByKey(array, key) {
 
 router.get("/", async (request, response) => {
   try {
-    const text = `Select  tbl_person_details.person_id  , name ,surname , degree ,day ,start_time, 
-    end_time from tbl_person_details 
-    inner join  tbl_person_workday
+    const text = `Select tbl_person_details.person_id, name, surname, degree, room_no, day, start_time, end_time 
+    from tbl_person_details 
+    inner join tbl_person_workday
     on 
     tbl_person_details.person_id = tbl_person_workday.person_id
     inner join tbl_workdate 
     on 
-    tbl_person_workday.date_id = tbl_workdate.date_id  `;
+    tbl_person_workday.date_id = tbl_workdate.date_id`;
     const { rows } = await postgresClient.query(text);
 
     const result = groupByKey(rows, "person_id");
@@ -51,9 +51,6 @@ router.get("/", async (request, response) => {
       key,
       value,
     }));
-
-    console.log("mapped = ", mapped);
-
     return response.status(200).json(mapped);
   } catch (error) {
     console.log("error = ", error);
