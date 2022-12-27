@@ -4,6 +4,7 @@ import postgresClient from "../config/database.js";
 const router = express.Router();
 
 //create note  ;
+//tbl_notes tablosuna veri eklemek için kullanılır
 router.post("/note", async (request, response) => {
   try {
     const text =
@@ -42,6 +43,7 @@ router.get("/person-notes/:personId", async (request, response) => {
     const text = "SELECT * FROM tbl_notes WHERE person_id = $1";
     const values = [parseInt(personId.slice(1))];
     const { rows } = await postgresClient.query(text, values);
+
     return response.status(200).json(rows);
   } catch (error) {
     console.log("error = ", error);
@@ -56,9 +58,10 @@ router.put("/update-note/:noteId", async (request, response) => {
     const text =
       "UPDATE tbl_notes SET title = $1 , description = $2  WHERE note_id = $3 RETURNING * ";
     const values = [
-      request.body.title, 
-      request.body.description, 
-      parseInt(noteId.slice(1))];
+      request.body.title,
+      request.body.description,
+      parseInt(noteId.slice(1)),
+    ];
 
     const { rows } = await postgresClient.query(text, values);
 

@@ -5,12 +5,17 @@ const router = express.Router();
 
 //create classroom ;
 
+//tbl_classroom tablosuna veri eklemek için kullanılır.
 router.post("/classroom", async (request, response) => {
   try {
     const text =
       "INSERT INTO tbl_classroom (classroom_id,class_code,capacity) VALUES ($1,$2,$3) RETURNING *";
 
-    const values = [request.body.class_name, request.body.class_amount, request.body.class_capacity];
+    const values = [
+      request.body.class_name,
+      request.body.class_amount,
+      request.body.class_capacity,
+    ];
 
     const result = await postgresClient.query(text, values);
     const { rows } = result;
@@ -21,6 +26,7 @@ router.post("/classroom", async (request, response) => {
   }
 });
 
+//tbl_classroom tablosundaki tüm verileri getirir.
 router.get("/", async (request, response) => {
   try {
     const text = "SELECT * FROM tbl_classroom ORDER BY classroom_id ASC";

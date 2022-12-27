@@ -4,6 +4,7 @@ import postgresClient from "../config/database.js";
 const router = express.Router();
 
 //create address ;
+//tbl_workdate tablosuna veri gün , başlangıç ve bitiş saatlerini eklemek için kullanılır
 router.post("/workingDay", async (request, response) => {
   try {
     const text =
@@ -33,6 +34,9 @@ function groupByKey(array, key) {
   }, {});
 }
 
+//3 farklı tablodan inner join kullanarak verileri personle günleri kısmına aktarma
+//tbl_person_details, tbl_person_workday, tbl_workdate
+
 router.get("/", async (request, response) => {
   try {
     const text = `Select tbl_person_details.person_id, name, surname, degree, room_no, day, start_time, end_time 
@@ -51,6 +55,7 @@ router.get("/", async (request, response) => {
       key,
       value,
     }));
+
     return response.status(200).json(mapped);
   } catch (error) {
     console.log("error = ", error);

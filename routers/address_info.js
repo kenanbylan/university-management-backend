@@ -4,6 +4,8 @@ import postgresClient from "../config/database.js";
 const router = express.Router();
 
 //create address ;
+
+//tbl_address tablosuna veri eklemek için kullanılır.
 router.post("/address", async (request, response) => {
   try {
     const text =
@@ -24,6 +26,7 @@ router.post("/address", async (request, response) => {
   }
 });
 
+//tbl_address tablosundaki tüm verileri getirir.
 router.get("/", async (request, response) => {
   try {
     const text = "SELECT * FROM tbl_address ORDER BY address_id ASC";

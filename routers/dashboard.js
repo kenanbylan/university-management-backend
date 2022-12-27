@@ -3,13 +3,12 @@ import postgresClient from "../config/database.js";
 
 const router = express.Router();
 
-//get all workss ;
+//tbl_person_details tablosu ile tbl_works tablosunu birleştirerek verileri çekmek için kullanılır.
 router.get("/", async (request, response) => {
   try {
     const text =
       "Select work_name,work_id,details,work_creator,work_owner,estimated_time, work_status,clasroom_id,create_time,finish_time,priority,person_id, name ,surname From tbl_works INNER join tbl_person_details ON tbl_works.work_creator = tbl_person_details.person_id ORDER BY work_id ASC";
     const { rows } = await postgresClient.query(text);
-
     const obj = {};
     const dataBegin = [];
     const dataProgressing = [];
@@ -58,11 +57,13 @@ router.get("/", async (request, response) => {
 });
 
 //Update notes
+//tbl_works tablosundaki verileri güncellemek için kullanılır.
 router.put("/update/:workId", async (request, response) => {
   try {
     const { workId } = request.params;
     const text =
       "UPDATE tbl_works SET work_name = $1 , details = $2 ,work_creator = $3 ,work_owner = $4, estimated_time = $5 ,work_status = $6,clasroom_id = $7 , create_time = $8,finish_time = $9,priority = $10 WHERE work_id = $11 RETURNING * ";
+
     const values = [
       request.body.work_name,
       request.body.details,
@@ -89,6 +90,7 @@ router.put("/update/:workId", async (request, response) => {
 });
 
 //Update work work_owner
+//tbl_works tablosundaki work_owner ve work_status verilerini güncellemek için kullanılır.
 router.put("/setWorkOwner", async (request, response) => {
   try {
     const text =
@@ -111,6 +113,7 @@ router.put("/setWorkOwner", async (request, response) => {
 });
 
 //Update work Finish Time
+//tbl_works tablosundaki finish_time verilerini güncellemek için kullanılır.
 router.put("/setWorkFinishTime", async (request, response) => {
   try {
     const text =
@@ -129,6 +132,7 @@ router.put("/setWorkFinishTime", async (request, response) => {
 });
 
 //delete works
+//tbl_works tablosundaki verileri silmek için kullanılır.
 router.delete("/delete/:workId", async (request, response) => {
   try {
     const { workId } = request.params;
@@ -150,6 +154,7 @@ router.delete("/delete/:workId", async (request, response) => {
 });
 
 //create work
+//tbl_works tablosuna veri eklemek için kullanılır.
 router.post("/work", async (request, response) => {
   try {
     const text =

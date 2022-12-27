@@ -3,6 +3,9 @@ import postgresClient from "../config/database.js";
 
 const router = express.Router();
 
+//get all contacts ;
+//tbl_person_details tablosu ile tbl_authorization tablosunun person_id iler aynı olan
+//verileri çekmek için kullanılır.
 router.get("/", async (request, response) => {
   try {
     const text =

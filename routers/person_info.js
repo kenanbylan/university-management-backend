@@ -4,11 +4,11 @@ import postgresClient from "../config/database.js";
 const router = express.Router();
 
 //create user
+//tbl_person_details tablosuna veri eklemek için kullanılır
 router.post("/", async (request, response) => {
   try {
     const text =
       "INSERT INTO tbl_person_details (person_id,name,surname,degree,phone,room_no,address_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
-
     const values = [
       request.body.person_id,
       request.body.name,
@@ -28,7 +28,8 @@ router.post("/", async (request, response) => {
   }
 });
 
-//Auth
+//Authentication
+//tbl_authorization tablosundan veri çekmek için kullanılır
 router.post("/login", async (request, response) => {
   try {
     const text =
@@ -49,6 +50,7 @@ router.post("/login", async (request, response) => {
 });
 
 //Update Users
+//tbl_person_details gelen userId ile eşleşen veriyi güncellemek için kullanılır
 router.put("/update/:userId", async (request, response) => {
   try {
     const { userId } = request.params;
@@ -97,6 +99,7 @@ router.put("/update/:userId", async (request, response) => {
 
 //Get users all users:
 
+//tbl_person_details tablosundaki tüm verileri çekmek için kullanılır
 router.get("/", async (request, response) => {
   try {
     const text = "SELECT  * FROM tbl_person_details ORDER BY person_id ASC  ";
@@ -109,6 +112,7 @@ router.get("/", async (request, response) => {
 });
 
 //Get userID by email address
+//tbl_authorization tablosundan email adresine göre person_id çekmek için kullanılır
 router.get("/email/:email", async (request, response) => {
   try {
     const { email } = request.params;
