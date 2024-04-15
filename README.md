@@ -107,7 +107,3 @@ Notların Görüntülenmesi ve Düzenlenmesi
 
 Kullanıcı Bilgilendirme Mesajları
 <img width="1822" alt="Screenshot 2023-04-12 at 21 44 14" src="https://user-images.githubusercontent.com/77414773/231753679-cfd47a2e-43d8-4a31-b967-2152a8a33174.png">
-
-### LICENSE
-
-[MIT © Melih Afşar](https://mit-license.org/)
