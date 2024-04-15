@@ -50,9 +50,6 @@ npm start
 ```
 <hr>
 
-## Proje-Frontend Docker Image Linki
-* [Frontend](https://hub.docker.com/r/melihafsar/management-web-frontend "Frontend")
-
 ## Dockerfile ile projeyi build etmek
 
 ```sh 
