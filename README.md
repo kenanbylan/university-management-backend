@@ -99,9 +99,6 @@ Personellerin Çalışma Durumlarının Tek Sayfada Toplanması
 Personel İletişim Adresleri
 <img width="1822" alt="Screenshot 2023-04-12 at 21 41 19" src="https://user-images.githubusercontent.com/77414773/231753696-448d70b4-dad1-4201-8861-1197f759df50.png">
 
-Profil Bilgi Güncelleme Sayfası
-<img width="1822" alt="Screenshot 2023-04-12 at 21 42 12" src="https://user-images.githubusercontent.com/77414773/231753692-b855a536-bbab-4daf-a19f-b27c1204a3a6.png">
-
 Kişisel Notların görüntülenmesi, silinmesi ve düzenlenmesi
 <img width="1822" alt="Screenshot 2023-04-12 at 21 42 21" src="https://user-images.githubusercontent.com/77414773/231753689-9e4da5e1-d59f-4108-b9e9-b8549e4383eb.png">
 
